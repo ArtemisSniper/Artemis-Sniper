@@ -5,31 +5,33 @@
 
 **Features**
 
-*Auto Delay 
+*Auto Delay*
 ```
 Gives you a Estimated delay from the name change ep
 ```
-*Supports all account types 
+*Supports all account types*
 ```
 Mojang, Microsoft, and Giftcard
 ```
-*Multiple Accounts 
+*Multiple Accounts*
 ```
 Allows user to input multiple Minecraft accounts
 ```
-*Easy to use 
+*Easy to use* 
 ```
 Paste accounts into "accs.txt" | enter your Target Username
 ```
-*Auto Auth 
+*Auto Auth* 
 ```
 Scans each account type for you
 ```
 
-**Dev Team**
+**Dev Team**:
 Sylestic
 Everest (me) 
 
 **APIs**
+```
 CoolKidMacho Droptime API
 Star Shop Droptime API
+```
