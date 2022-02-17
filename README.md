@@ -5,26 +5,26 @@
 
 **Features**
 
-*Auto Delay*
-```
-Gives you a Estimated delay from the name change ep
-```
-*Supports all account types*
-```
-Mojang, Microsoft, and Giftcard
-```
-*Multiple Accounts*
-```
-Allows user to input multiple Minecraft accounts
-```
-*Easy to use* 
-```
-Paste accounts into "accs.txt" | enter your Target Username
-```
-*Auto Auth* 
-```
-Scans each account type for you
-```
+    *Auto Delay*
+    ```
+    Gives you a Estimated delay from the name change ep
+    ```
+    *Supports all account types*
+    ```
+    Mojang, Microsoft, and Giftcard
+    ```
+    *Multiple Accounts*
+    ```
+    Allows user to input multiple Minecraft accounts
+    ```
+    *Easy to use* 
+    ```
+    Paste accounts into "accs.txt" | enter your Target Username
+    ```
+    *Auto Auth* 
+    ```
+    Scans each account type for you
+    ```
 
 **Dev Team**:
 Sylestic
