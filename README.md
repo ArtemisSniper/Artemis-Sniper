@@ -8,16 +8,16 @@
       - Gives you a Estimated delay from the name change ep
       
   *Supports all account types*
-      - Mojang, Microsoft, and Giftcard
+      - Mojang, Microsoft, and gift card accounts
       
   *Multiple Accounts*
-      - Allows user to input multiple Minecraft accounts
+      - Input multiple Minecraft accounts
       
   *Easy to use* 
-      - Paste accounts into "accs.txt" | enter your Target Username
+      - 2 Steps: Paste accounts into accs.txt, enter your target username and droptime
       
   *Auto Auth* 
-      - Automatically Scans each account type for you
+      - Automatically scans each account type for you
 
 **Dev Team**:
 Sylestic
