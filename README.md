@@ -19,10 +19,6 @@
   *Auto Auth* 
       - Automatically scans each account type for you
 
-**Dev Team**:
-Sylestic
-Everest (me) 
-
 **Droptime API**
 ```
 CoolKidMacho Droptime API
