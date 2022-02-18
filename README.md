@@ -2,10 +2,9 @@
 
 ***"Artemis" is a Minecraft Name Sniper utilizing Sockets &amp; Threading created using Python.***
 
-***```Skidding/Forking Rules: https://choosealicense.com/no-permission/ | If you want to distribute your modified code of "Artemis" you MUST link this repository```***
+***Skidding/Forking Rules: ```https://choosealicense.com/no-permission/``` | If you want to distribute your modified code of "Artemis" you MUST link this repository***
 
-**Features: **
-
+**Features**
     *Auto Delay*
       * Gives you a Estimated delay from the name change ep
     *Supports all account types*
@@ -21,7 +20,7 @@
 Sylestic
 Everest (me) 
 
-**APIs**
+**Droptime API**
 ```
 CoolKidMacho Droptime API
 Star Shop Droptime API
