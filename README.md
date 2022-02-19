@@ -19,7 +19,6 @@
   *Auto Auth* 
       - Automatically scans each account type for you
 
-
 **Droptime API**
 ```
 CoolKidMacho Droptime API
