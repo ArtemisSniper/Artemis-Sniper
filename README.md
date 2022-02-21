@@ -48,3 +48,5 @@ Star Shop Droptime API
 Format: `username droptime`
 
 Example: `Sylestic 150`
+
+**-Developers:** `; everest ?#7184` `Sylestic#9170`
