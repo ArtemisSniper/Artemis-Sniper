@@ -32,3 +32,13 @@ email3@email.com:password
 CoolKidMacho Droptime API
 Star Shop Droptime API
 ```
+
+**Installation**
+
+`git clone https://github.com/Everest187/Artemis-Sniper`
+
+`cd Artemis-Sniper`
+
+`python -m pip install requirements.txt`
+
+`python artemis.py`
