@@ -42,3 +42,8 @@ Star Shop Droptime API
 `python -m pip install -r requirements.txt`
 
 `python artemis.py`
+
+**Input**
+Format: `username droptime`
+
+Example: `Sylestic 150`
