@@ -389,7 +389,7 @@ webhook = DiscordWebhook(url=f'{webhook_link}', rate_limit_retry=True)
 embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_name}',
                      description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
 #Prepare Sleep
-time.sleep((droptime - time.time()) + 0.04)
+time.sleep((droptime - time.time()) + 0.08)
 
 if accounts['gc_accounts']:
     initial =  f"POST /minecraft/profile HTTP/1.1\r\nHost: api.minecraftservices.com\r\nprofileName: {target_name}\r\nAuthorization: Bearer "
