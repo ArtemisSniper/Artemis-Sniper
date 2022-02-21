@@ -39,6 +39,6 @@ Star Shop Droptime API
 
 `cd Artemis-Sniper`
 
-`python -m pip install requirements.txt`
+`python -m pip install -r requirements.txt`
 
 `python artemis.py`
