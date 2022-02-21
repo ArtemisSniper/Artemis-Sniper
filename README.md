@@ -44,6 +44,7 @@ Star Shop Droptime API
 `python artemis.py`
 
 **Input**
+
 Format: `username droptime`
 
 Example: `Sylestic 150`
