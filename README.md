@@ -19,6 +19,14 @@
   *Auto Auth* 
       - Automatically scans each account type for you
 
+**accs.txt Format**
+```
+email1@email.com:password
+email2@email.com:password
+email3@email.com:password
+...
+```
+
 **Droptime API**
 ```
 CoolKidMacho Droptime API
