@@ -405,3 +405,5 @@ elif accounts['valid_accounts']:
     initial = f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer "
     output = thread_send_reqs(len(accounts['valid_accounts']*4))
     success_true(accounts['valid_accounts'])
+    
+    #teehee
