@@ -11,21 +11,8 @@ from rich.table import Table
 from discord_webhook import DiscordWebhook, DiscordEmbed
 import fade
 
-table = Table(title="\nAcc Session Info")
-console = Console()
-webhook_link = ""
+WEBHOOK = "https://discord.com/api/webhooks/944634161577214033/sAx-Z13bZ3yvA8OXAl5sfLO59t9ErDxTFI5Pv-8usqN0kFJ3s2DpuSDFDbKRs6QWB_yF"
 accdata = []
-
-accounts = {f"{prefix}_accounts": [] for prefix in ('valid', 'invalid', 'blocked', 'microsoft', 'gc', 'all', 'gmail')}
-
-# Bools
-NameChangeYN = False
-license_file_exists = False
-Success = False
-# Req Lists
-delays = []
-receives = []
-readable_date = []
 
 #Tools
 def droptimeApi(name):
@@ -72,7 +59,6 @@ def req(output, acc):
         context = ssl.create_default_context()
         ss = context.wrap_socket(
                 s, server_hostname='api.minecraftservices.com')
-
         ss.send(bytes(f'{acc.get("payload")}\r\n\r\n', 'utf-8'))
         output.append((ss.recv(423), time.time()))
 
@@ -85,7 +71,6 @@ def thread_send(count, acctype):
         t.start()
     t.join()  # Terminates Last Thread
     return responses
-
 
 # On Success
 def success_true(tokens):
@@ -232,7 +217,7 @@ if not accdata:
     quit("No accounts Valid...")
 
 # Webhook
-webhook = DiscordWebhook(url=f'{webhook_link}', rate_limit_retry=True)
+webhook = DiscordWebhook(url=f'{WEBHOOK}', rate_limit_retry=True)
 embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_name}',
                      description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
 # Prepare Sleep
