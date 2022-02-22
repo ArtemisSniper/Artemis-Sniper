@@ -9,13 +9,13 @@
   *Auto Delay*
       - gives you an estimated delay from the name change endpoint
       
-  *Supports all account types*
+  *Supports All Account Types*
       - Mojang, Microsoft, and gift card accounts
       
   *Multiple Accounts*
       - input multiple Minecraft accounts
       
-  *Easy to use* 
+  *Easy To Use* 
       - 2 steps: Paste accounts into accs.txt. Then enter your target username and droptime.
       
   *Auto Auth* 
