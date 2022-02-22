@@ -16,7 +16,7 @@
       - input multiple Minecraft accounts
       
   *Easy to use* 
-      - 2 Steps: Paste accounts into accs.txt, enter your target username and droptime
+      - 2 steps: Paste accounts into accs.txt. Then enter your target username and droptime
       
   *Auto Auth* 
       - automatically scans each account type for you
