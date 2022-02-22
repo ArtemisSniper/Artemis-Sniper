@@ -7,7 +7,7 @@
 **Features**
 
   *Auto Delay*
-      - Gives you a Estimated delay from the name change ep
+      - Gives you an estimated delay from the name change endpoint
       
   *Supports all account types*
       - Mojang, Microsoft, and gift card accounts
