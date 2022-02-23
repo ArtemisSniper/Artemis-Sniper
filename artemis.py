@@ -86,8 +86,11 @@ def success_true(token_list):
         if statusCode.isnumeric() and int(statusCode) == 200:
             embed.set_thumbnail(
                 url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024')
-            webhook.add_embed(embed)
-            webhook.execute()
+            try:
+                webhook.add_embed(embed)
+                webhook.execute()
+            except:
+                print("Could not find webhook link ")
             for token in token_list:
                 username = requests.get(
                     "https://api.minecraftservices.com/minecraft/profile",
