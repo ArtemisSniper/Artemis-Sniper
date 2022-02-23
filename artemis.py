@@ -14,6 +14,7 @@ import fade
 WEBHOOK = ""
 accdata = []
 delays = []
+output = []
 #Tools
 def droptimeApi(name):
     req = requests.get(f"http://api.star.shopping/droptime/{name}", headers={"User-Agent": "Sniper"})
@@ -52,7 +53,7 @@ def isGC(bearer):
         return False
 
 # EP Requests
-def req(output, acc):
+def req(acc):
     # With closes socket connection
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect(('api.minecraftservices.com', 443))
@@ -62,15 +63,11 @@ def req(output, acc):
         ss.send(bytes(f'{acc.get("payload")}\r\n\r\n', 'utf-8'))
         output.append((ss.recv(423), time.time()))
 
-
 def thread_send(count, acctype):
     global t
-    responses = []
-    threads = [threading.Thread(target=req, args=(
-        responses, acctype,)) for _ in range(count)]
+    threads = [threading.Thread(target=req, args=(acctype,)) for _ in range(count)]
     for t in threads:
         t.start()
-    return responses
 
 # On Success
 def success_true(token_list):
@@ -94,7 +91,7 @@ def success_true(token_list):
             for token in token_list:
                 username = requests.get(
                     "https://api.minecraftservices.com/minecraft/profile",
-                    headers={"Authorization": "Bearer " + token.get_token()},
+                    headers={"Authorization": "Bearer " + token.get("bearer")},
                 ).json()["name"]
                 if username == target_name:
                     skin_change = requests.post(
@@ -103,7 +100,7 @@ def success_true(token_list):
                             "variant": "classic",
                             "url": "https://i.imgur.com/8nuxlIk.png",
                         },
-                        headers={"Authorization": "Bearer " + token.get_token()},
+                        headers={"Authorization": "Bearer " + token.get("bearer")},
                     )
                     if skin_change.status_code == 200:
                         print(f"{Fore.MAGENTA}Successfully delivered Skin Change{Fore.RESET}")
@@ -184,11 +181,11 @@ with open("accs.txt") as file:
             #Microsoft & Gc auth
             if (msresp := msmcauth.login(email, password).access_token) and isGC(msresp):
                 print(f"Authenticated {email} [GC]")
-                accdata.append({"type": "gc", "reqamount": 2,
+                accdata.append({"type": "gc", "reqamount": 2, "bearer": msresp,
                                 "payload": f"POST /minecraft/profile HTTP/1.1\r\nHost: api.minecraftservices.com\r\nprofileName: {target_name}\r\nAuthorization: Bearer {msresp}"})
             else:
                 if NameChange(msresp) is True:
-                    accdata.append({"type": "ms", "reqamount": 4,
+                    accdata.append({"type": "ms", "reqamount": 4, "bearer": msresp,
                                     "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {msresp}"})
                     print(f"Authenticated {email} [MS]")
                 else:
@@ -203,7 +200,7 @@ with open("accs.txt") as file:
             if auth.status_code == 200 and len((auth.json())) != 0:
                 if NameChange(auth.json()['accessToken']):
                     print(f"Authenticated {email} [MJ]")
-                    accdata.append({"type": "ms", "reqamount": 4,
+                    accdata.append({"type": "ms", "reqamount": 4, "bearer": auth.json()['accessToken'],
                                     "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {auth.json()['accessToken']}"})
                 else:
                     print(f"{email} Cannot NameChange")
@@ -221,6 +218,6 @@ embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_n
 print("Sleeping zzZZZ")
 time.sleep((droptime - time.time()))
 for acc_data in accdata:
-    output = thread_send(acc_data.get("reqamount"), acc_data)
+    thread_send(acc_data.get("reqamount"), acc_data)
 
 success_true(accdata)
