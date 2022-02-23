@@ -1,6 +1,6 @@
 # Artemis-Sniper
 
-# Join the Discord for support https://discord.gg/Ew8zJUyPna
+**Join the Discord for support https://discord.gg/Ew8zJUyPna**
 
 ***"Artemis" is a Minecraft Name Sniper, utilizing Sockets &amp; Threading created using Python.***
 
