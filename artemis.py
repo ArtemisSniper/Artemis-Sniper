@@ -11,9 +11,9 @@ from rich.table import Table
 from discord_webhook import DiscordWebhook, DiscordEmbed
 import fade
 
-WEBHOOK = "https://discord.com/api/webhooks/944634161577214033/sAx-Z13bZ3yvA8OXAl5sfLO59t9ErDxTFI5Pv-8usqN0kFJ3s2DpuSDFDbKRs6QWB_yF"
+WEBHOOK = ""
 accdata = []
-
+delays = []
 #Tools
 def droptimeApi(name):
     req = requests.get(f"http://api.star.shopping/droptime/{name}", headers={"User-Agent": "Sniper"})
@@ -64,54 +64,51 @@ def req(output, acc):
 
 
 def thread_send(count, acctype):
+    global t
     responses = []
     threads = [threading.Thread(target=req, args=(
         responses, acctype,)) for _ in range(count)]
     for t in threads:
         t.start()
-    t.join()  # Terminates Last Thread
     return responses
 
 # On Success
-def success_true(tokens):
+def success_true(token_list):
+    global Success
+    t.join()
     threads = threading.active_count() - 1
     while threads:
         threads = threading.active_count() - 1
         print(f"Waiting for {threads} thread(s) to finish...")
-        time.sleep(0.5) #Wait until threads terminate
-    #close socket connection
+        time.sleep(0.5)  # Wait until threads terminate
+    # Sort Times
     output.sort(key=lambda sorts: sorts[1])
     for outs in output:
         statusCode = outs[0].decode("utf-8")[9:12]
         print(f"Recv: {statusCode} @ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
         if statusCode.isnumeric() and int(statusCode) == 200:
-            webhook.add_embed(embed.set_thumbnail(
-                url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024') is embed)
-            try:
-                webhook.execute()
-            except:
-                print("No Webhook Specified")
-                continue
-            for token in tokens:
-                if requests.get(
-                        "https://api.minecraftservices.com/minecraft/profile",
-                        headers={"Authorization": "Bearer " +
-                                 token.get("bearer")},
-                ).json()["name"] is target_name:
-                    if requests.post(
-                            "https://api.minecraftservices.com/minecraft/profile/skins",
-                            json={
-                                "variant": "classic",
-                                "url": "https://i.imgur.com/8nuxlIk.png",
-                            },
-                            headers={"Authorization": "Bearer " +
-                                     token.get("bearer")},
-                    ).status_code == 200:
-                        print(
-                            f"{Fore.MAGENTA}Successfully delivered Skin Change{Fore.RESET}")
+            embed.set_thumbnail(
+                url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024')
+            webhook.add_embed(embed)
+            webhook.execute()
+            for token in token_list:
+                username = requests.get(
+                    "https://api.minecraftservices.com/minecraft/profile",
+                    headers={"Authorization": "Bearer " + token.get_token()},
+                ).json()["name"]
+                if username == target_name:
+                    skin_change = requests.post(
+                        "https://api.minecraftservices.com/minecraft/profile/skins",
+                        json={
+                            "variant": "classic",
+                            "url": "https://i.imgur.com/8nuxlIk.png",
+                        },
+                        headers={"Authorization": "Bearer " + token.get_token()},
+                    )
+                    if skin_change.status_code == 200:
+                        print(f"{Fore.MAGENTA}Successfully delivered Skin Change{Fore.RESET}")
                     else:
-                        print(
-                            f"{Fore.LIGHTRED_EX}Failed to deliver Skin Change{Fore.RESET}")
+                        print(f"{Fore.LIGHTRED_EX}Failed to deliver Skin Change{Fore.RESET}")
                     print(f"{Fore.MAGENTA}Sniped {Fore.RESET}{target_name}")
 
 # Check for Dups accs
@@ -222,8 +219,7 @@ embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_n
                      description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
 # Prepare Sleep
 print("Sleeping zzZZZ")
-time.sleep((droptime - time.time()) + 0.08)
-
+# time.sleep((droptime - time.time()))
 for acc_data in accdata:
     output = thread_send(acc_data.get("reqamount"), acc_data)
 
