@@ -12,6 +12,7 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 import fade
 
 WEBHOOK = ""
+#lists
 accdata = []
 delays = []
 output = []
@@ -71,7 +72,6 @@ def thread_send(count, acctype):
 
 # On Success
 def success_true(token_list):
-    global Success
     t.join()
     threads = threading.active_count() - 1
     while threads:
@@ -153,7 +153,7 @@ pinger = auto_ping(5)
 if len(code) < 2:
     # auto offset
     print(f"\nOffset not specified, received: {pinger}ms\n")
-    tune_delay = input("Tune Delay (press enter if false) -> ")
+    tune_delay = input("Tune Delay? (press enter if false) -> ")
     if len(tune_delay) < 1:
         offset = float(pinger) / 1000
     else:
