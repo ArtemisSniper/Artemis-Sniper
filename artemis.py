@@ -219,7 +219,7 @@ embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_n
                      description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
 # Prepare Sleep
 print("Sleeping zzZZZ")
-# time.sleep((droptime - time.time()))
+time.sleep((droptime - time.time()))
 for acc_data in accdata:
     output = thread_send(acc_data.get("reqamount"), acc_data)
 
