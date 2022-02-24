@@ -12,7 +12,6 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 import fade
 
 WEBHOOK = ""
-#lists
 accdata = []
 delays = []
 output = []
@@ -62,7 +61,7 @@ def req(acc):
         ss = context.wrap_socket(
                 s, server_hostname='api.minecraftservices.com')
         ss.send(bytes(f'{acc.get("payload")}\r\n\r\n', 'utf-8'))
-        output.append((ss.recv(423), time.time()))
+    output.append((ss.recv(423), time.time()))
 
 def thread_send(count, acctype):
     global t
@@ -79,18 +78,20 @@ def success_true(token_list):
         print(f"Waiting for {threads} thread(s) to finish...")
         time.sleep(0.5)  # Wait until threads terminate
     # Sort Times
+    embed.set_thumbnail(
+        url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024')
     output.sort(key=lambda sorts: sorts[1])
     for outs in output:
         statusCode = outs[0].decode("utf-8")[9:12]
         print(f"Recv: {statusCode} @ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
         if statusCode.isnumeric() and int(statusCode) == 200:
-            embed.set_thumbnail(
-                url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024')
             try:
                 webhook.add_embed(embed)
                 webhook.execute()
-            except:
-                print("Could not find webhook link ")
+            except requests.exceptions.MissingSchema:
+                print("No Webhook Url Specified")
+            except requests.exceptions.ConnectionError:
+                print("Failed to send webhook")
             for token in token_list:
                 username = requests.get(
                     "https://api.minecraftservices.com/minecraft/profile",
@@ -153,7 +154,7 @@ pinger = auto_ping(5)
 if len(code) < 2:
     # auto offset
     print(f"\nOffset not specified, received: {pinger}ms\n")
-    tune_delay = input("Tune Delay? (press enter if false) -> ")
+    tune_delay = input("Tune Delay (press enter if false) -> ")
     if len(tune_delay) < 1:
         offset = float(pinger) / 1000
     else:
