@@ -5,21 +5,12 @@
 ***"Artemis" is a Minecraft Name Sniper, utilizing Sockets &amp; Threading created using Python.***
 
 **Features**
-
-  *Auto Delay*
-      - gives you an estimated delay from the name change endpoint
-      
-  *Supports All Account Types*
-      - Mojang, Microsoft, and gift card accounts
-      
-  *Multiple Accounts*
-      - input multiple Minecraft accounts
-      
-  *Easy To Use* 
-      - 2 steps: Paste accounts into accs.txt. Then enter your target username and droptime.
-      
-  *Auto Auth* 
-      - automatically scans each account type for you
+Auto Delay  (gives an estimated delay from the name change endpoint)
+Supports All Account Types  (Mojang, Microsoft, and gift card accounts)
+Multiple Accounts  (Allows more than one Minecraft account to be used)
+Easy To Use  (2 steps: Paste your accounts into “accs.txt”. Then enter your target username.)
+Auto Auth  (Automatically Scans and Authenticates each account.) 
+Config File (Allows you to Configure Artemis to your likings: Manual Bearer Authentication, Webhook Enable/Disable, and Webhook URI) 
 
 **accs.txt Format**
 ```
