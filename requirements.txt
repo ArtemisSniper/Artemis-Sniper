@@ -3,4 +3,3 @@ discord_webhook==0.14.0
 fade==0.0.9
 msmcauth==0.0.4
 requests==2.26.0
-rich==11.2.0
