@@ -44,6 +44,13 @@ def auto_ping(num_ping):
         auto_offset = int((sum(delays) / len(delays) * 1000 / 2) + 10)
     return auto_offset
 
+def countdown_time(count_amt: float) -> None:
+    for count_amt in range(int(count_amt), 0, -1):
+        mins, secs = divmod(count_amt, 99999)
+        print(f"Generating Threads ~~ {secs:02d}s", end="\r")
+        sleep(1)
+        count_amt -= 1 
+
 # Check acc type
 def isGC(bearer):
     if requests.get("https://api.minecraftservices.com/minecraft/profile/namechange",
@@ -219,8 +226,11 @@ webhook = DiscordWebhook(url=f'{WEBHOOK}', rate_limit_retry=True)
 embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_name}',
                      description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
 # Prepare Sleep
-print("Sleeping zzZZZ")
-time.sleep((droptime - time.time()))
+try:
+    countdown_time((droptime - time.time()) - 8)
+except ValueError:
+    pass
+time.sleep(droptime - time.time())
 for acc_data in accdata:
     thread_send(acc_data.get("reqamount"), acc_data)
 
