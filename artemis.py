@@ -46,7 +46,7 @@ def countdown_time(count_amt: float) -> None:
     for count_amt in range(int(count_amt), 0, -1):
         mins, secs = divmod(count_amt, 99999)
         print(f"Generating Threads ~~ {secs:02d}s", end="\r")
-        sleep(1)
+        time.sleep(1)
         count_amt -= 1 
 
 # Check acc type
