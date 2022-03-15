@@ -6,8 +6,6 @@ import ssl
 import datetime
 import threading
 import time
-from rich.console import Console
-from rich.table import Table
 from discord_webhook import DiscordWebhook, DiscordEmbed
 import fade
 
