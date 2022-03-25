@@ -151,7 +151,7 @@ if len(code) < 2:
     else:
         offset = float(tune_delay) / 1000
 else:
-    offset = float(code[1])
+    offset = float(code[1]) / 1000
         
 target_name = code[0]
 try:
