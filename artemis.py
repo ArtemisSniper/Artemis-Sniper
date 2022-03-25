@@ -164,7 +164,9 @@ if len(code) < 2:
         offset = float(pinger) / 1000
     else:
         offset = float(tune_delay) / 1000
-
+else:
+    offset = float(code[1])
+        
 target_name = code[0]
 try:
     droptime = (droptimeApi(target_name) - offset)
