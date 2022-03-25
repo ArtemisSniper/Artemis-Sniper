@@ -174,10 +174,6 @@ except TypeError:
     droptime = int(input(f"{target_name} UNIX Timestamp ~> "))
 
 # Authentication Proccess
-with open('accs.txt', 'r') as f:
-    # Ignore Spaces in text file
-    lines = list(filter(lambda i: i, list(map(lambda s: s.strip("\n"), f.readlines()))))
-
 with open("accs.txt") as file:
     for line in file.read().splitlines():
         if not line.strip():
