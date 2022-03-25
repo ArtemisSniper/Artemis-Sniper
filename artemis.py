@@ -118,22 +118,8 @@ def success_true(token_list):
                     print(f"{Fore.MAGENTA}Sniped {Fore.RESET}{target_name}")
 
 # Check for Dups accs
-with open("accs.txt", mode="r") as file:
-    data = file.read()
-
-words = data.replace("\n", " ").split()
-
-found_words = set()  # no order.
-filtered_words = []  # keeps insertion order.
-for i in words:
-    if i not in found_words:
-        filtered_words.append(i)
-        found_words.add(i)
-
-in_string = "\n".join(filtered_words)
-
-with open("accs.txt", mode="w") as file:
-    file.write(in_string)
+with open("accs.txt", mode="w+") as file:
+    file.write(set(file.read().splitlines()))
 
 # Start main
 print(fade.purplepink(f"""
