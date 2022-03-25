@@ -79,8 +79,8 @@ def success_true(token_list):
     output.sort(key=lambda time: time[1])
     for outs in output:
         status_code = outs[0].decode("utf-8")[9:12]
-        print(f"Recv: {status_code} @ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
         if status_code.isnumeric() and int(status_code) == 200:
+            print(f"[{Fore.GREEN}{status_code}{Fore.RESET}] ~ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
             for token in token_list:
                 headers = {"Authorization": f"Bearer {token.get('bearer')}"}
                 username = requests.get(
@@ -114,7 +114,8 @@ def success_true(token_list):
                 print(f"{Fore.YELLOW}No webhook url specified{Fore.RESET}")
             except requests.exceptions.ConnectionError:
                 print(f"{Fore.YELLOW}Failed to execute webhook{Fore.RESET}")
-            
+        else:
+            print(f"[{Fore.RED}{status_code}{Fore.RESET}] ~ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")     
 
 # remove duplicates               
 with open("accs.txt", "r+") as file:
