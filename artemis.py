@@ -79,7 +79,7 @@ def success_true(token_list):
     output.sort(key=lambda time: time[1])
     for outs in output:
         status_code = outs[0].decode("utf-8")[9:12]
-        print(f"Recv: {statusCode} @ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
+        print(f"Recv: {status_code} @ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
         if status_code.isnumeric() and int(status_code) == 200:
             for token in token_list:
                 headers = {"Authorization": f"Bearer {token.get('bearer')}"}
