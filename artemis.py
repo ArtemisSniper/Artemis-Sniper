@@ -117,9 +117,12 @@ def success_true(token_list):
                         print(f"{Fore.LIGHTRED_EX}Failed to deliver Skin Change{Fore.RESET}")
                     print(f"{Fore.MAGENTA}Sniped {Fore.RESET}{target_name}")
 
-# Check for Dups accs
-with open("accs.txt", mode="w+") as file:
-    file.write(set(file.read().splitlines()))
+# remove duplicates               
+with open("accs.txt") as file:
+    accs = "\n".join(set(file.read().splitlines()))
+    
+with open("accs.txt", "w") as file:
+    file.write(accs)
 
 # Start main
 print(fade.purplepink(f"""
