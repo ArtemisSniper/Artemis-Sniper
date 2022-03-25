@@ -8,54 +8,46 @@ import threading
 import time
 from discord_webhook import DiscordWebhook, DiscordEmbed
 import fade
+import sys
 
-WEBHOOK = ""
+WEBHOOK_URL = ""
 accdata = []
-delays = []
 output = []
-#Tools
-def droptimeApi(name):
-    req = requests.get(f"http://api.star.shopping/droptime/{name}", headers={"User-Agent": "Sniper"})
-    if req.status_code == 200:
-        return req.json()["unix"]
 
-def NameChange(bearer):
-    return requests.get(
+def nameChangeAllowed(bearer) -> bool:
+    try:
+        return requests.get(
             "https://api.minecraftservices.com/minecraft/profile/namechange",
             headers={"Authorization": "Bearer " + bearer},
         ).json()["nameChangeAllowed"]
+    except requests.exceptions.JSONDecodeError:
+        return False
 
-def auto_ping(num_ping):
+def auto_ping(number_of_pings):
+    delays = []
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as so:
         so.connect(('api.minecraftservices.com', 443))
         context = ssl.create_default_context()
         ssock = context.wrap_socket(
             so, server_hostname='api.minecraftservices.com')
-        for _ in range(num_ping):
+        for _ in range(number_of_pings):
             start = time.time()
             ssock.send(bytes(
                 "PUT /minecraft/profile/name/TEST HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer " + "TEST_TOKEN\r\n\r\n",
                 "utf-8"))
             ssock.recv(10000).decode('utf-8')
-            end = time.time()
-            delays.append(end - start)
-        auto_offset = int((sum(delays) / len(delays) * 1000 / 2) + 10)
-    return auto_offset
+            delays.append(time.time() - start)
+    return (sum(delays) / len(delays) * 1000 / 2) + 10
 
-def countdown_time(count_amt: float) -> None:
-    for count_amt in range(int(count_amt), 0, -1):
-        mins, secs = divmod(count_amt, 99999)
-        print(f"Generating Threads ~~ {secs:02d}s", end="\r")
+def countdown_time(count):
+    for seconds in range(int(count), 0, -1):
+        print(f"Generating Threads ~~ {seconds:02d}s", end="\r")
         time.sleep(1)
-        count_amt -= 1 
 
 # Check acc type
-def isGC(bearer):
-    if requests.get("https://api.minecraftservices.com/minecraft/profile/namechange",
-                       headers={"Authorization": "bearer " + bearer}).status_code == 404:
-        return True
-    else:
-        return False
+def isGC(bearer) -> bool:
+    return requests.get("https://api.minecraftservices.com/minecraft/profile/namechange",
+                       headers={"Authorization": f"Bearer {bearer}"}).status_code == 404
 
 # EP Requests
 def req(acc):
@@ -65,12 +57,12 @@ def req(acc):
         context = ssl.create_default_context()
         ss = context.wrap_socket(
                 s, server_hostname='api.minecraftservices.com')
-        ss.send(bytes(f'{acc.get("payload")}\r\n\r\n', 'utf-8'))
+        ss.send(bytes(f'{acc["payload"]}\r\n\r\n', 'utf-8'))
     output.append((ss.recv(423), time.time()))
 
-def thread_send(count, acctype):
+def thread_send(count, acc):
     global t
-    threads = [threading.Thread(target=req, args=(acctype,)) for _ in range(count)]
+    threads = [threading.Thread(target=req, args=(acc,)) for _ in range(count)]
     for t in threads:
         t.start()
 
@@ -82,46 +74,53 @@ def success_true(token_list):
         threads = threading.active_count() - 1
         print(f"Waiting for {threads} thread(s) to finish...")
         time.sleep(0.5)  # Wait until threads terminate
+    
     # Sort Times
-    embed.set_thumbnail(
-        url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024')
-    output.sort(key=lambda sorts: sorts[1])
+    output.sort(key=lambda time: time[1])
     for outs in output:
-        statusCode = outs[0].decode("utf-8")[9:12]
+        status_code = outs[0].decode("utf-8")[9:12]
         print(f"Recv: {statusCode} @ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")
-        if statusCode.isnumeric() and int(statusCode) == 200:
-            try:
-                webhook.add_embed(embed)
-                webhook.execute()
-            except requests.exceptions.MissingSchema:
-                print("No Webhook Url Specified")
-            except requests.exceptions.ConnectionError:
-                print("Failed to send webhook")
+        if status_code.isnumeric() and int(status_code) == 200:
             for token in token_list:
+                headers = {"Authorization": f"Bearer {token.get('bearer')}"}
                 username = requests.get(
                     "https://api.minecraftservices.com/minecraft/profile",
-                    headers={"Authorization": "Bearer " + token.get("bearer")},
+                    headers=headers,
                 ).json()["name"]
                 if username == target_name:
+                    print(f"🎉 Sniped {Fore.MAGENTA}{target_name}{Fore.RESET} 🎉")
                     skin_change = requests.post(
                         "https://api.minecraftservices.com/minecraft/profile/skins",
                         json={
                             "variant": "classic",
                             "url": "https://i.imgur.com/8nuxlIk.png",
                         },
-                        headers={"Authorization": "Bearer " + token.get("bearer")},
+                        headers=headers,
                     )
                     if skin_change.status_code == 200:
-                        print(f"{Fore.MAGENTA}Successfully delivered Skin Change{Fore.RESET}")
+                        print(f"{Fore.MAGENTA}Successfully delivered skin change{Fore.RESET}")
                     else:
-                        print(f"{Fore.LIGHTRED_EX}Failed to deliver Skin Change{Fore.RESET}")
-                    print(f"{Fore.MAGENTA}Sniped {Fore.RESET}{target_name}")
+                        print(f"{Fore.YELLOW}Failed to deliver skin change{Fore.RESET}")
+            try:
+                webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True)
+                embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_name}',
+                                     description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
+                embed.set_thumbnail(
+                        url='https://cdn.discordapp.com/icons/944338449140420690/eaf9e293982fe84b1bb5ff08f40a17f9.webp?size=1024')
+                webhook.add_embed(embed)
+                webhook.execute()
+                print(f"{Fore.MAGENTA}Successfully executed webhook{Fore.RESET}")
+            except requests.exceptions.MissingSchema:
+                print(f"{Fore.YELLOW}No webhook url specified{Fore.RESET}")
+            except requests.exceptions.ConnectionError:
+                print(f"{Fore.YELLOW}Failed to execute webhook{Fore.RESET}")
+            
 
 # remove duplicates               
-with open("accs.txt") as file:
+with open("accs.txt", "r+") as file:
     accs = "\n".join(set(file.read().splitlines()))
-    
-with open("accs.txt", "w") as file:
+    file.seek(0)
+    file.truncate()
     file.write(accs)
 
 # Start main
@@ -137,84 +136,73 @@ print(fade.purplepink(f"""
 """))
 print("Blessed by the Goddess - Artemis\n")
 
-print("[Name To Snipe] [Offset]\n")
-code = input("|)-> ").split()
-#declaration
-offset = 0
-while len(code) < 1:
-    code = input("invalid format |)-> ").split()
-pinger = auto_ping(5)
+target_name = input("% Name ~> ")
+auto_offset = auto_ping(5)
+print()
+offset = float(input(f"% Offset [{auto_offset:.2f}ms] ~> ") or auto_offset)
 
-if len(code) < 2:
-    # auto offset
-    print(f"\nOffset not specified, received: {pinger}ms\n")
-    tune_delay = input("Tune Delay (press enter if false) -> ")
-    if len(tune_delay) < 1:
-        offset = float(pinger) / 1000
-    else:
-        offset = float(tune_delay) / 1000
+droptime = requests.get(f"http://api.star.shopping/droptime/{target_name}", headers={"User-Agent": "Sniper"}).json()
+
+if droptime.get("unix"):
+    droptime = droptime["unix"] - (offset / 1000)
 else:
-    offset = float(code[1]) / 1000
-        
-target_name = code[0]
-try:
-    droptime = (droptimeApi(target_name) - offset)
-except TypeError:
-    droptime = int(input(f"{target_name} UNIX Timestamp ~> "))
+    print(f"\n{Fore.RED}ERROR: \"{droptime['error'].capitalize()}\"{Fore.RESET}")
+    droptime = int(input(f"\n% {target_name} Unix Droptime ~> {Fore.RESET}"))
 
-# Authentication Proccess
 with open("accs.txt") as file:
     for line in file.read().splitlines():
         if not line.strip():
             continue
         splitter = line.split(":")
+        if len(splitter) != 2:
+            print(f"{Fore.LIGHTYELLOW_EX}Invalid account ~ \"{line}\"{Fore.RESET}")
+            continue
+        
+        email, password = splitter
+        
         try:
-            email, password = (splitter[0], splitter[1])
-        except IndexError:
-            print(f"Please Provide your password for {splitter[0]}")
-            pass
-        try:
-            #Microsoft & Gc auth
             if (msresp := msmcauth.login(email, password).access_token) and isGC(msresp):
-                print(f"Authenticated {email} [GC]")
-                accdata.append({"type": "gc", "reqamount": 2, "bearer": msresp,
+                # Gc auth
+                print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [GC]")
+                accdata.append({"reqamount": 2, "bearer": msresp,
                                 "payload": f"POST /minecraft/profile HTTP/1.1\r\nHost: api.minecraftservices.com\r\nprofileName: {target_name}\r\nAuthorization: Bearer {msresp}"})
             else:
-                if NameChange(msresp) is True:
-                    accdata.append({"type": "ms", "reqamount": 4, "bearer": msresp,
+                # Microsoft auth
+                if not nameChangeAllowed(msresp):
+                    print(f"{Fore.YELLOW}{email} cannot namechange{Fore.RESET}")
+                    continue
+
+                accdata.append({"reqamount": 4, "bearer": msresp,
                                     "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {msresp}"})
-                    print(f"Authenticated {email} [MS]")
-                else:
-                    print(f"{email} cannot namechange")
+                print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [MS]")
         except:
+            # Mojang auth
             auth = requests.post("https://authserver.mojang.com/authenticate",
                                   json={"username": email, "password": password})
             try:
-                HEADER_NC = {"Authorization": f"Bearer {auth.json()['accessToken']}"}
-            except KeyError:
-                pass
-            if auth.status_code == 200 and len((auth.json())) != 0:
-                if NameChange(auth.json()['accessToken']):
-                    print(f"Authenticated {email} [MJ]")
-                    accdata.append({"type": "ms", "reqamount": 4, "bearer": auth.json()['accessToken'],
-                                    "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {auth.json()['accessToken']}"})
+                auth_result = auth.json()
+                if auth.status_code == 200 and auth_result:
+                    if not nameChangeAllowed(auth_result['accessToken']):
+                        print(f"{Fore.YELLOW}{email} cannot namechange{Fore.RESET}")
+                        continue
+
+                    accdata.append({"reqamount": 4, "bearer": auth_result['accessToken'],
+                                        "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {auth_result['accessToken']}"})
+                    print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [MJ]")
                 else:
-                    print(f"{email} Cannot NameChange")
-            else:
-                print(f"Failed to authenticate {email}")
+                    raise Exception
+            except:
+                print(f"{Fore.YELLOW}[{auth.status_code}] ~ {email} failed to authenticate{Fore.RESET}")
 
 if not accdata:
-    quit("No accounts Valid...")
+    sys.exit(f"{Fore.RED}No accounts valid...{Fore.RESET}")
 
-# Webhook
-webhook = DiscordWebhook(url=f'{WEBHOOK}', rate_limit_retry=True)
-embed = DiscordEmbed(title="NameMC", url=f'https://namemc.com/search?q={target_name}',
-                     description=f"**Sniped `{target_name}` :ok_hand:**", color=12282401)
 # Prepare Sleep
 try:
     countdown_time((droptime - time.time()) - 8)
 except ValueError:
     pass
+
 time.sleep(droptime - time.time())
 for acc_data in accdata:
     thread_send(acc_data.get("reqamount"), acc_data)
