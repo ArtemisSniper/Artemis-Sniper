@@ -62,6 +62,7 @@ def req(acc):
 
 def thread_send(count, acc):
     global t
+    threads = [threading.Thread(target=req, args=(acc,)) for _ in range(count)]
     for t in threads:
         t.start()
 
@@ -202,10 +203,11 @@ try:
     countdown_time((droptime - time.time()) - 8)
 except ValueError:
     pass
+
 #Generating Threads Before Droptime
-threads = [threading.Thread(target=req, args=(acc,)) for _ in range(count)]
-time.sleep(droptime - time.time())
 for acc_data in accdata:
     thread_send(acc_data.get("reqamount"), acc_data)
+
+time.sleep(droptime - time.time())
 
 success_true(accdata)
