@@ -40,8 +40,16 @@ def auto_ping(number_of_pings):
     return (sum(delays) / len(delays) * 1000 / 2) + 10
 
 def countdown_time(count):
-    for seconds in range(int(count), 0, -1):
-        print(f"Generating Threads ~~ {seconds:02d}s", end="\r")
+    for i in range(int(count), 0, -1):
+        minutes, seconds = divmod(i, 60)
+        if minutes > 59:
+            hours, minutes = divmod(minutes, 60)
+            print(f"Waiting for drop 😴 ~~ {'0' if hours < 10 else ''}{hours}:{'0' if minutes < 10 else ''}{minutes}:{'0' if seconds < 10 else ''}{seconds}", end="\r")
+        elif minutes:
+            print(f"Waiting for drop 😫 ~~ {'0' if minutes < 10 else ''}{minutes}:{'0' if seconds < 10 else ''}{seconds}   ", end="\r")
+        else:
+            print(f"Waiting for drop 👀 ~~ {seconds}s   ", end="\r")
+
         time.sleep(1)
 
 # Check acc type
