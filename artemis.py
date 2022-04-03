@@ -68,12 +68,6 @@ def req(acc):
         ss.send(bytes(f'{acc["payload"]}\r\n\r\n', 'utf-8'))
     output.append((ss.recv(423), time.time()))
 
-def thread_send(count, acc):
-    global t
-    threads = [threading.Thread(target=req, args=(acc,)) for _ in range(count)]
-    for t in threads:
-        t.start()
-
 # On Success
 def success_true(token_list):
     t.join()
@@ -214,8 +208,9 @@ except ValueError:
 
 #Generating Threads Before Droptime
 for acc_data in accdata:
-    thread_send(acc_data.get("reqamount"), acc_data)
-
+    threads = [threading.Thread(target=req, args=(acc,)) for _ in range(count)]
+    
 time.sleep(droptime - time.time())
-
+for t in threads:
+    t.start()
 success_true(accdata)
