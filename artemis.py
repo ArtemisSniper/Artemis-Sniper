@@ -208,7 +208,7 @@ except ValueError:
 
 #Generating Threads Before Droptime
 for acc_data in accdata:
-    threads = [threading.Thread(target=req, args=(acc,)) for _ in range(count)]
+    threads = [threading.Thread(target=req, args=(acc_data,)) for _ in range(acc_data.get("reqamount"))]
     
 time.sleep(droptime - time.time())
 for t in threads:
