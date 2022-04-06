@@ -5,32 +5,23 @@
 ***"Artemis" is a Minecraft Name Sniper, utilizing Sockets & Threading created using Python.***
 -----
 
-**Features**
+## **Features**
 - *Supports All Account Types* (Mojang, Microsoft, and Gift Card accounts.)
 - *Multiple Accounts* (Allows more than one Minecraft account to be used.)
 - *Auto Delay* (Gives an Estimated Delay from the Name Change Endpoint.)
 - *Easy To Use* (Literally Only 2 Steps: Paste your accounts into `accs.txt`, Then enter your target username.)
 - *Auto Auth* (Automatically scans and Authenticates each account.)
 
-**accs.txt Format**
-```
-email1@email.com:password
-email2@email.com:password
-email3@email.com:password
-...
-```
 
-**Droptime API**
+## **Installation**
 
-[Star Shopping Droptime API](https://star.shopping/)
+[Download Artemis](https://github.com/Everest187/Artemis-Sniper/releases/latest/download/Artemis.zip)
 
-**Installation**
+Extract `Artemis.zip`
 
-```
-git clone https://github.com/Everest187/Artemis-Sniper
-cd Artemis-Sniper
-python -m pip install -r requirements.txt
-python artemis.py
-```
+Put your accounts in `accs.txt`
 
-**Developers:** `; everest ?#7184` `Sylestic#9170`
+Double click `artemis.py`
+
+
+[Special thanks to james, tenscape, & kqzz](https://star.shopping/)
