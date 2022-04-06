@@ -1,14 +1,25 @@
-import requests
-from colorama import Fore
-import msmcauth
-import socket
-import ssl
-import datetime
-import threading
-import time
-from discord_webhook import DiscordWebhook, DiscordEmbed
-import fade
-import sys
+# Standard Library imports
+import socket, ssl, datetime, threading, time, sys, subprocess
+
+try:
+    import requests
+    import msmcauth
+    import fade
+    from colorama import Fore
+    from discord_webhook import DiscordWebhook, DiscordEmbed
+
+except ImportError:
+    print("Installing dependencies... (requirements.txt)")
+
+    # sys.executable -m pip install -r requirements.txt (silenced stdout)
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'], stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL)
+    
+    # import again
+    import requests
+    import msmcauth
+    import fade
+    from colorama import Fore
+    from discord_webhook import DiscordWebhook, DiscordEmbed
 
 WEBHOOK_URL = ""
 accdata = []
@@ -141,13 +152,13 @@ if __name__ == "__main__":
 
         print("Blessed by the Goddess - Artemis\n")
 
-        target_name = input("Name ~> ")
+        target_name = input("% Name ~> ")
         while not target_name:
-            target_name = input("Name ~> ")
+            target_name = input("% Name ~> ")
 
         auto_offset = auto_ping(5)
 
-        offset = float(input(f"\nOffset [{auto_offset:.2f}ms] ~> ") or auto_offset)
+        offset = float(input(f"\n% Offset [{auto_offset:.2f}ms] ~> ") or auto_offset)
 
         droptime = requests.get(f"http://api.star.shopping/droptime/{target_name}", headers={"User-Agent": "Sniper"}).json()
 
@@ -155,9 +166,9 @@ if __name__ == "__main__":
             droptime = droptime["unix"] - (offset / 1000)
         else:
             print(f"\n{Fore.RED}ERROR: \"{droptime['error'].capitalize()}\"{Fore.RESET}")
-            droptime = input(f"\n{target_name} Unix Droptime ~> {Fore.RESET}")
+            droptime = input(f"\n% {target_name} Unix Droptime ~> {Fore.RESET}")
             while not droptime:
-                droptime = input(f"\n{target_name} Unix Droptime ~> {Fore.RESET}")
+                droptime = input(f"\n% {target_name} Unix Droptime ~> {Fore.RESET}")
 
             droptime = int(droptime)
 
@@ -225,4 +236,4 @@ if __name__ == "__main__":
         success_true(accdata)
 
     finally:
-        input("Press enter to exit...")
+        input("\n\n\nPress enter to exit...")
