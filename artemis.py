@@ -120,15 +120,16 @@ def success_true(token_list):
             print(f"[{Fore.RED}{status_code}{Fore.RESET}] ~ {datetime.datetime.utcfromtimestamp(outs[1]).strftime('%S.%f')}")     
 
 if __name__ == "__main__":
-    # remove duplicates               
-    with open("accs.txt", "r+") as file:
-        accs = "\n".join(set(file.read().splitlines()))
-        file.seek(0)
-        file.truncate()
-        file.write(accs)
+    try:
+        # remove duplicates               
+        with open("accs.txt", "r+") as file:
+            accs = "\n".join(set(file.read().splitlines()))
+            file.seek(0)
+            file.truncate()
+            file.write(accs)
 
-    # Start main
-    print(fade.purplepink(f"""
+        # Start main
+        print(fade.purplepink(f"""
 ##########                #                #########   ######   ########## 
      # ##  #########   #######  ##########         #     #      #        # 
      #     #       #    # #             #          # ##########         #  
@@ -138,80 +139,90 @@ if __name__ == "__main__":
  #                        #           #    ########       ####    ##    
                                                          a r t e m i s"""))
 
-    print("Blessed by the Goddess - Artemis\n")
+        print("Blessed by the Goddess - Artemis\n")
 
-    target_name = input("% Name ~> ")
-    auto_offset = auto_ping(5)
+        target_name = input("% Name ~> ")
+        while not target_name:
+            target_name = input("% Name ~> ")
 
-    offset = float(input(f"\n% Offset [{auto_offset:.2f}ms] ~> ") or auto_offset)
+        auto_offset = auto_ping(5)
 
-    droptime = requests.get(f"http://api.star.shopping/droptime/{target_name}", headers={"User-Agent": "Sniper"}).json()
+        offset = float(input(f"\n% Offset [{auto_offset:.2f}ms] ~> ") or auto_offset)
 
-    if droptime.get("unix"):
-        droptime = droptime["unix"] - (offset / 1000)
-    else:
-        print(f"\n{Fore.RED}ERROR: \"{droptime['error'].capitalize()}\"{Fore.RESET}")
-        droptime = int(input(f"\n% {target_name} Unix Droptime ~> {Fore.RESET}"))
+        droptime = requests.get(f"http://api.star.shopping/droptime/{target_name}", headers={"User-Agent": "Sniper"}).json()
 
-    with open("accs.txt") as file:
-        for line in file.read().splitlines():
-            if not line.strip():
-                continue
-            splitter = line.split(":")
-            if len(splitter) != 2:
-                print(f"{Fore.LIGHTYELLOW_EX}Invalid account ~ \"{line}\"{Fore.RESET}")
-                continue
-            
-            email, password = splitter
-            
-            try:
-                if (msresp := msmcauth.login(email, password).access_token) and isGC(msresp):
-                    # Gc auth
-                    print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [GC]")
-                    accdata.append({"reqamount": 2, "bearer": msresp,
-                                    "payload": f"POST /minecraft/profile HTTP/1.1\r\nHost: api.minecraftservices.com\r\nprofileName: {target_name}\r\nAuthorization: Bearer {msresp}"})
-                else:
-                    # Microsoft auth
-                    if not nameChangeAllowed(msresp):
-                        print(f"{Fore.YELLOW}{email} cannot namechange{Fore.RESET}")
-                        continue
+        if droptime.get("unix"):
+            droptime = droptime["unix"] - (offset / 1000)
+        else:
+            print(f"\n{Fore.RED}ERROR: \"{droptime['error'].capitalize()}\"{Fore.RESET}")
+            droptime = input(f"\n% {target_name} Unix Droptime ~> {Fore.RESET}")
+            while not droptime:
+                droptime = input(f"\n% {target_name} Unix Droptime ~> {Fore.RESET}")
 
-                    accdata.append({"reqamount": 4, "bearer": msresp,
-                                        "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {msresp}"})
-                    print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [MS]")
-            except:
-                # Mojang auth
-                auth = requests.post("https://authserver.mojang.com/authenticate",
-                                      json={"username": email, "password": password})
+            droptime = int(droptime)
+
+        with open("accs.txt") as file:
+            for line in file.read().splitlines():
+                if not line.strip():
+                    continue
+                splitter = line.split(":")
+                if len(splitter) != 2:
+                    print(f"{Fore.LIGHTYELLOW_EX}Invalid account ~ \"{line}\"{Fore.RESET}")
+                    continue
+                
+                email, password = splitter
+                
                 try:
-                    auth_result = auth.json()
-                    if auth.status_code == 200 and auth_result:
-                        if not nameChangeAllowed(auth_result['accessToken']):
+                    if (msresp := msmcauth.login(email, password).access_token) and isGC(msresp):
+                        # Gc auth
+                        print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [GC]")
+                        accdata.append({"reqamount": 2, "bearer": msresp,
+                                        "payload": f"POST /minecraft/profile HTTP/1.1\r\nHost: api.minecraftservices.com\r\nprofileName: {target_name}\r\nAuthorization: Bearer {msresp}"})
+                    else:
+                        # Microsoft auth
+                        if not nameChangeAllowed(msresp):
                             print(f"{Fore.YELLOW}{email} cannot namechange{Fore.RESET}")
                             continue
 
-                        accdata.append({"reqamount": 4, "bearer": auth_result['accessToken'],
-                                            "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {auth_result['accessToken']}"})
-                        print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [MJ]")
-                    else:
-                        raise Exception
+                        accdata.append({"reqamount": 4, "bearer": msresp,
+                                            "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {msresp}"})
+                        print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [MS]")
                 except:
-                    print(f"{Fore.YELLOW}[{auth.status_code}] ~ {email} failed to authenticate{Fore.RESET}")
+                    # Mojang auth
+                    auth = requests.post("https://authserver.mojang.com/authenticate",
+                                          json={"username": email, "password": password})
+                    try:
+                        auth_result = auth.json()
+                        if auth.status_code == 200 and auth_result:
+                            if not nameChangeAllowed(auth_result['accessToken']):
+                                print(f"{Fore.YELLOW}{email} cannot namechange{Fore.RESET}")
+                                continue
 
-    if not accdata:
-        sys.exit(f"{Fore.RED}No accounts valid...{Fore.RESET}")
+                            accdata.append({"reqamount": 4, "bearer": auth_result['accessToken'],
+                                                "payload": f"PUT /minecraft/profile/name/{target_name} HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer {auth_result['accessToken']}"})
+                            print(f"Authenticated {Fore.MAGENTA}{email}{Fore.RESET} ~ [MJ]")
+                        else:
+                            raise Exception
+                    except:
+                        print(f"{Fore.YELLOW}[{auth.status_code}] ~ {email} failed to authenticate{Fore.RESET}")
 
-    # Prepare Sleep
-    try:
-        countdown_time((droptime - time.time()) - 8)
-    except ValueError:
-        pass
+        if not accdata:
+            sys.exit(f"{Fore.RED}No accounts valid...{Fore.RESET}")
 
-    #Generating Threads Before Droptime
-    for acc_data in accdata:
-        threads = [threading.Thread(target=req, args=(acc_data,)) for _ in range(acc_data.get("reqamount"))]
-        
-    time.sleep(droptime - time.time())
-    for t in threads:
-        t.start()
-    success_true(accdata)
+        # Prepare Sleep
+        try:
+            countdown_time((droptime - time.time()) - 8)
+        except ValueError:
+            pass
+
+        #Generating Threads Before Droptime
+        for acc_data in accdata:
+            threads = [threading.Thread(target=req, args=(acc_data,)) for _ in range(acc_data.get("reqamount"))]
+            
+        time.sleep(droptime - time.time())
+        for t in threads:
+            t.start()
+        success_true(accdata)
+
+    finally:
+        input("Press enter to exit...")
