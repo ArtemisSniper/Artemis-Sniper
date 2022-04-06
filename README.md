@@ -1,4 +1,4 @@
-# Artemis Sniper
+# Artemis
 
 ### Join the [Discord](https://discord.gg/Ew8zJUyPna) for support `.gg/Ew8zJUyPna`
 
