@@ -37,7 +37,7 @@ def auto_ping(number_of_pings):
                 "utf-8"))
             ssock.recv(10000).decode('utf-8')
             delays.append(time.time() - start)
-    return (sum(delays) / len(delays) * 1000 / 2) + 10
+    return (sum(delays) / len(delays) * 1000 / 2)
 
 def countdown_time(count):
     for i in range(int(count), 0, -1):
