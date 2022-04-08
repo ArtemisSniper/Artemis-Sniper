@@ -3,6 +3,7 @@
 ### Join the [Discord](https://discord.gg/Ew8zJUyPna) for support `.gg/Ew8zJUyPna`
 
 ***"Artemis" is a Minecraft Name Sniper, utilizing Sockets & Threading created using Python.***
+![gif] (./Editor_26_.gif)
 -----
 
 ## **Features**
