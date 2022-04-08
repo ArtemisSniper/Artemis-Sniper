@@ -24,4 +24,4 @@ Put your accounts in `accs.txt`
 Double click `artemis.py`
 
 
-[Special thanks to james, tenscape, & kqzz](https://star.shopping/)
+[Special thanks to james, tenscape, & kqzz (droptime api)](https://star.shopping/)
